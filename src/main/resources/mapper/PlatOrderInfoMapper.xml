@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.PlatOrderInfoMapper">
+
+    <select id="findOrderPage" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatOrderInfoDto" resultType="com.hongcheng.techinnovte.entity.PlatOrderInfo">
+        SELECT T.ID, T.CUST_ID, T.ORDER_NO, T.ORDER_TYPE, T.ORDER_PERIOD, T.ORDER_STS, T.AMOUNT, T.SHOULD_PAYTIME, T.REAL_PAYTIME, T.PAY_WAY, T.INVOICE_NO, T.PAY_URL, T.PAY_UPERID, T.MAIL_PROVINCE, T.MAIL_CITY, T.MAIL_COUNTY, T.MAIL_DETAIL, T.MAIL_LINKMAN, T.MAIL_PHONE, T.DEALID, T.REMARK, T.CREATEDATE, T.CREATEUSERID, T.UPDATEDATE, T.CUST_NAME, T.DEALNAME 
+        FROM (SELECT T1.*, T2.NAME CUST_NAME, T3.NICKNAME DEALNAME FROM PLAT_ORDER_INFO T1 LEFT JOIN COMPANY_INFO T2 ON T1.CUST_ID = T2.ID LEFT JOIN SYS_USER T3 ON T1.DEALID = T3.ID) T
+        <where>
+            <include refid="order_where"/>
+        </where>
+        ORDER BY T.ID DESC
+    </select>
+    
+    <select id="findOrderList" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatOrderInfoDto" resultType="com.hongcheng.techinnovte.entity.PlatOrderInfo">
+        SELECT T.ID, T.CUST_ID, T.ORDER_NO, T.ORDER_TYPE, T.ORDER_PERIOD, T.ORDER_STS, T.AMOUNT, T.SHOULD_PAYTIME, T.REAL_PAYTIME, T.PAY_WAY, T.INVOICE_NO, T.PAY_URL, T.PAY_UPERID, T.MAIL_PROVINCE, T.MAIL_CITY, T.MAIL_COUNTY, T.MAIL_DETAIL, T.MAIL_LINKMAN, T.MAIL_PHONE, T.DEALID, T.REMARK, T.CREATEDATE, T.CREATEUSERID, T.UPDATEDATE, T.CUST_NAME, T.DEALNAME 
+        FROM (SELECT T1.*, T2.NAME CUST_NAME, T3.NICKNAME DEALNAME FROM PLAT_ORDER_INFO T1 LEFT JOIN COMPANY_INFO T2 ON T1.CUST_ID = T2.ID LEFT JOIN SYS_USER T3 ON T1.DEALID = T3.ID) T
+        <where>
+            <include refid="order_where"/>
+        </where>
+        ORDER BY T.ID DESC
+    </select>
+
+    <sql id="order_where">
+        T.ENABLED = 1 
+        <if test="order.custId!=null">
+            AND T.CUST_ID = #{order.custId}
+        </if>
+        <if test="order.custName!=null and order.custName!=''">
+            AND T.CUST_NAME LIKE CONCAT('%',#{order.custName},'%')
+        </if>
+        <if test="order.orderType!=null and order.orderType!=''">
+            AND T.ORDER_TYPE = #{order.orderType}
+        </if>
+        <if test="order.orderSts!=null and order.orderSts!=''">
+            AND T.ORDER_STS = #{order.orderSts}
+        </if>
+    </sql>
+
+    <insert id="duesadd" parameterType="com.hongcheng.techinnovte.entity.PlatOrderInfo">
+        INSERT INTO PLAT_ORDER_INFO(
+            CUST_ID, 
+            ORDER_NO, 
+            ORDER_TYPE, 
+            ORDER_PERIOD, 
+            AMOUNT, 
+            SHOULD_PAYTIME, 
+            CREATEUSERID, 
+            CREATEDATE) 
+        SELECT T1.COMPANY_ID AS CUST_ID, 
+            CONCAT(DATE_FORMAT(NOW(),'%Y%m%d'), UNIX_TIMESTAMP(), LPAD(_NEXTVAL('plat_order_info'),6,'0')) AS ORDER_NO, 
+            'HF' AS ORDER_TYPE, 
+            CONCAT(T2.PERIOD_NUM, T3.LISTCONTENT) AS ORDER_PERIOD, 
+            T2.AMOUNT,
+            NOW() AS SHOULD_PAYTIME,
+            ${orderinfo.createuserid} AS CREATEUSERID,
+            NOW() AS CREATEDATE 
+        FROM ALLIANCE_MEMBER T1 
+        LEFT JOIN PLAT_DUES_TYPE T2 
+        ON T1.TYPE = T2.CODE LEFT 
+        JOIN BIZ_SYS_DD T3 ON CAST(T2.PERIOD_UNIT AS CHAR) = T3.LISTVALUE AND T3.LISTKEY = 'PERIOD_UNIT' WHERE T1.COMPANY_ID = #{orderinfo.custId}
+    </insert>
+</mapper>

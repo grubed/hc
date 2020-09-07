@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.PlatCustTypeMapper">
+    <select id="checkRepeat" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatCustTypeDto" resultType="com.hongcheng.techinnovte.entity.PlatCustType">
+        SELECT * FROM PLAT_CUST_TYPE 
+        <where>
+            ENABLED = 1 AND NAME = #{type.name}
+            <if test="type.id != null">
+                AND ID &lt;&gt; #{type.id}
+            </if>
+        </where>
+    </select>
+</mapper>

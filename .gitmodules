@@ -1,0 +1,4 @@
+[submodule ".gitlab/seaman"]
+	path = .gitlab/seaman
+	url = ../seaman.git
+	branch = master

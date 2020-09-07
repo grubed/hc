@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.LhzxCustBaseMapper">
+    <select id="findCustBasePage" parameterType="com.hongcheng.techinnovte.pojo.dto.CustBaseDTO" resultType="com.hongcheng.techinnovte.entity.LhzxCustBase">
+        SELECT * FROM (SELECT T1.*, T2.NAME IDENTITY_NAME FROM LHZX_CUST_BASE T1 LEFT JOIN PLAT_CUST_TYPE T2 ON T1.IDENTITY = T2.CODE) T
+        <where>
+            <include refid="custbase_where"/>
+        </where>
+        ORDER BY T.ID DESC
+    </select>
+    
+    <select id="findCustBaseList" parameterType="com.hongcheng.techinnovte.pojo.dto.CustBaseDTO" resultType="com.hongcheng.techinnovte.entity.LhzxCustBase">
+        SELECT * FROM (SELECT T1.*, T2.NAME IDENTITY_NAME FROM LHZX_CUST_BASE T1 LEFT JOIN PLAT_CUST_TYPE T2 ON T1.IDENTITY = T2.CODE) T
+        <where>
+            <include refid="custbase_where"/>
+            AND T.STS IN (4,5,6)
+        </where>
+        ORDER BY T.ID DESC
+    </select>
+    
+    <select id="findCustBaseInfo" parameterType="com.hongcheng.techinnovte.pojo.dto.CustBaseDTO" resultType="com.hongcheng.techinnovte.entity.LhzxCustBase">
+        SELECT * FROM (SELECT T1.*, T2.NAME IDENTITY_NAME, T3.NAME DUES_TYPE_NAME FROM LHZX_CUST_BASE T1 LEFT JOIN PLAT_CUST_TYPE T2 ON T1.IDENTITY = T2.CODE LEFT JOIN PLAT_DUES_TYPE T3 ON T1.DUES_TYPE = T3.CODE) T
+        <where>
+            <include refid="custbase_where"/>
+        </where>
+    </select>
+    
+    <sql id="custbase_where">
+        T.ENABLED = 1 
+        <if test="custbase != null">
+	        <if test="custbase.custname!=null and custbase.custname!=''">
+	            AND T.CUSTNAME LIKE CONCAT('%',#{custbase.custname},'%')
+	        </if>
+	        <if test="custbase.id!=null">
+	            AND T.ID = #{custbase.id}
+	        </if>
+	        <if test="custbase.sts!=null">
+	            AND T.STS = #{custbase.sts}
+	        </if>
+        </if>
+    </sql>
+    <select id="findByIdEnable"  resultType="com.hongcheng.techinnovte.entity.LhzxCustBase">
+        SELECT * FROM LHZX_CUST_BASE where id = #{id} and ENABLED = 0;
+    </select>
+    <update id="updateEnable" >
+        UPDATE LHZX_CUST_BASE SET ENABLED = 1 WHERE ID = #{id}
+    </update>
+
+</mapper>

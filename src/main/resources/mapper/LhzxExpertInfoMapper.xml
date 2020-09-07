@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.LhzxExpertInfoMapper">
+    <resultMap id="LhzxExpertInfo" type="com.hongcheng.techinnovte.entity.LhzxExpertInfo">
+        <id property="id" column="id"/>
+    </resultMap>
+    <select id="getExpertInfoData" resultMap="LhzxExpertInfo" >
+        SELECT * FROM lhzx_expert_info
+        <if test="name != null or sts != null or mobile != null ">
+            WHERE
+        </if>
+        <if test="name != null">
+            name LIKE #{name}
+        </if>
+        <if test="name == null and sts != null">
+            sts = #{sts}
+        </if>
+        <if test="name != null and sts != null">
+            and sts = #{sts}
+        </if>
+        <if test="name == null and sts == null and mobile != null">
+            APPLY_LOGINNAME = #{mobile}
+        </if>
+        <if test="(name != null or sts != null) and mobile != null">
+            and APPLY_LOGINNAME = #{mobile}
+        </if>
+        ORDER BY CREATEDATE DESC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,17 @@
+package com.hongcheng.techinnovte.service;
+
+import java.util.*
+import com.hongcheng.techinnovte.pojo.dto.*
+import com.hongcheng.techinnovte.service.*
+import com.hongcheng.techinnovte.service.drl.*
+rule "test_test01"
+    when
+        $it:InputConditionDTO(kind == "1");
+        du :DrlUseService();
+    then
+        du.prinit("test01",$it);
+
+end
+
+
+

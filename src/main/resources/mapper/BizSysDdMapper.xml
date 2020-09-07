@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.BizSysDdMapper">
+    <resultMap id="DictDTO" type="com.hongcheng.techinnovte.pojo.dto.DictDTO">
+        <id property="id" column="id"/>
+        <result property="key" column="key"/>
+        <result property="parentlistvalue" column="parentlistvalue"/>
+        <result property="selected" column="selected"/>
+        <result property="value" column="value"/>
+        <result property="content" column="content"/>
+    </resultMap>
+    <select id="getDict" resultMap="DictDTO" >
+        SELECT d.listvalue as "key", d.parentlistvalue, false as selected, d.LISTVALUE AS VALUE, d.LISTCONTENT AS CONTENT FROM biz_sys_dd d where
+        <if test="plistvalue != null and plistvalue != ''">
+            d.parentlistvalue = #{plistvalue} and
+        </if>
+        d.listkey = #{key}
+    </select>
+    
+    <select id="findKeys" resultType="java.lang.String" >
+        SELECT LISTKEY FROM (SELECT LISTKEY, COUNT(1) COUNT FROM BIZ_SYS_DD WHERE ENABLED = 1 GROUP BY LISTKEY ) T WHERE T.COUNT > 1
+    </select>
+    
+    <select id="getValueByKey" resultMap="DictDTO" >
+        SELECT T.LISTVALUE AS 'KEY', T.PARENTLISTVALUE, 'false' AS SELECTED, T.LISTVALUE AS VALUE, T.LISTCONTENT AS CONTENT FROM BIZ_SYS_DD T WHERE ENABLED = 1 AND LISTVALUE &lt;&gt; '!'
+        <if test="key != null and key != ''">
+            AND T.LISTKEY = #{key} 
+        </if>
+        ORDER BY ORDERBY
+    </select>
+</mapper>

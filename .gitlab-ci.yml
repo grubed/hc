@@ -1,0 +1,4 @@
+include:
+  - project: 'cosmic/seaman'
+    ref: master
+    file: '/spring-boot/main.gitlab-ci.yml'

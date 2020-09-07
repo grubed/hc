@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.PlatFileInfoMapper">
+    
+    <update id="downcount" parameterType="java.lang.Long">
+        UPDATE PLAT_FILE_INFO SET FILE_DOWNCOUNT = FILE_DOWNCOUNT+1 WHERE ID = #{fileid}
+    </update>
+    
+    <select id="selectByIds" resultType="com.hongcheng.techinnovte.entity.PlatFileInfo">
+        SELECT * FROM PLAT_FILE_INFO T
+        <where>
+            T.ID IN
+            <foreach item="item" collection="array" index="index"  open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+</mapper>

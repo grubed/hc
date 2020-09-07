@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.PlatDuesTypeMapper">
+    <select id="checkRepeat" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatDuesTypeDto" resultType="com.hongcheng.techinnovte.entity.PlatDuesType">
+        SELECT * FROM PLAT_DUES_TYPE 
+        <where>
+            ENABLED = 1 AND NAME = #{dues.name}
+            <if test="dues.id != null">
+                AND ID &lt;&gt; #{dues.id}
+            </if>
+        </where>
+    </select>
+</mapper>

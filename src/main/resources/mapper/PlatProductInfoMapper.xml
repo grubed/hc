@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongcheng.techinnovte.mapper.PlatProductInfoMapper">
+
+    <select id="findProductPage" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatProductInfoDto" resultType="com.hongcheng.techinnovte.entity.PlatProductInfo">
+        SELECT PI.ID, PI.PRO_NAME, PI.PRO_TYPE_A, PI.PRO_TYPE_B, PI.PRO_TYPE_C, PI.PRO_DETAIL, PI.PUB_DATE, PI.PRO_VERSION, PI.LINKMAN, PI.LINKPHONE, PI.PRO_PUBIMAGE, PI.INDEPEN_TYPE, PI.PRO_DECLARE, PI.PRO_BROCHURE, PI.PRO_FUNCTION, PI.OPEN_FLAG, PI.CUST_ID, PI.PRO_STS, PI.CORE_FLAG, PI.DISPLAY_FLAG, PI.DISPLAY_CONTENT, PI.PRO_APPSCENE, PI.CREATEDATE, PI.CREATEUSERID, PI.UPDATEDATE, PI.UPDATEUSERID, PI.CUST_NAME 
+        FROM (SELECT T1.*, T2.NAME CUST_NAME FROM PLAT_PRODUCT_INFO T1 LEFT JOIN COMPANY_INFO T2 ON T1.CUST_ID = T2.ID) PI 
+        <where>
+            <include refid="product_where"/>
+        </where>
+        ORDER BY PI.ID DESC
+    </select>
+    
+    <select id="findProductList" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatProductInfoDto" resultType="com.hongcheng.techinnovte.entity.PlatProductInfo">
+        SELECT PI.ID, PI.PRO_NAME, PI.PRO_TYPE_A, PI.PRO_TYPE_B, PI.PRO_TYPE_C, PI.PRO_DETAIL, PI.PUB_DATE, PI.PRO_VERSION, PI.LINKMAN, PI.LINKPHONE, PI.PRO_PUBIMAGE, PI.INDEPEN_TYPE, PI.PRO_DECLARE, PI.PRO_BROCHURE, PI.PRO_FUNCTION, PI.OPEN_FLAG, PI.CUST_ID, PI.PRO_STS, PI.CORE_FLAG, PI.DISPLAY_FLAG, PI.DISPLAY_CONTENT, PI.PRO_APPSCENE, PI.CREATEDATE, PI.CREATEUSERID, PI.UPDATEDATE, PI.UPDATEUSERID, PI.CUST_NAME 
+        FROM (SELECT T1.*, T2.NAME CUST_NAME FROM PLAT_PRODUCT_INFO T1 LEFT JOIN COMPANY_INFO T2 ON T1.CUST_ID = T2.ID) PI 
+        <where>
+            <include refid="product_where"/>
+        </where>
+        ORDER BY PI.ID DESC
+    </select>
+    
+    <select id="checkRepeat" parameterType="com.hongcheng.techinnovte.pojo.dto.PlatProductInfoDto" resultType="com.hongcheng.techinnovte.entity.PlatProductInfo">
+        SELECT * FROM PLAT_PRODUCT_INFO 
+        <where>
+            ENABLED = 1 AND PRO_NAME = #{product.proName}
+            <if test="product.id != null">
+	            AND ID &lt;&gt; #{product.id}
+	        </if>
+        </where>
+    </select>
+    
+    <sql id="product_where">
+        PI.ENABLED = 1 
+        <if test="product.custName!=null and product.custName!=''">
+            AND PI.CUST_NAME LIKE CONCAT('%',#{product.custName},'%')
+        </if>
+        <if test="product.proName!=null and product.proName!=''">
+            AND PI.PRO_NAME LIKE CONCAT('%',#{product.proName},'%')
+        </if>
+        <if test="product.custId!=null">
+            AND PI.CUST_ID = #{product.custId}
+        </if>
+        <if test="product.pubDate!=null">
+            AND PI.PUB_DATE = #{product.pubDate}
+        </if>
+    </sql>
+</mapper>
